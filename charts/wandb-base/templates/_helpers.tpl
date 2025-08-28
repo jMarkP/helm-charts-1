@@ -46,6 +46,14 @@ helm.sh/chart: {{ include "wandb-base.chart" . }}
 app.kubernetes.io/version: {{ .Values.image.tag | trunc 63 | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- $commonLabels := merge (pluck "labels" (default (dict) .Values.common) | first) .Values.global.common.labels}}
+{{- if $commonLabels }}
+{{-   range $key, $value := $commonLabels }}
+{{- if $key }}
+{{ $key }}: {{ $value | trunc 63 | quote }}
+{{- end }}
+{{-   end }}
+{{- end -}}
 {{- end }}
 
 {{/*
